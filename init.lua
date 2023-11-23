@@ -1,35 +1,67 @@
 -- bootstrap lazy.nvim, LazyVim and your plugins
 require("config.lazy")
--- require("solarized-osaka").setup({
---   -- your configuration comes here
---   -- or leave it empty to use the default settings
---   transparent = true, -- Enable this to disable setting the background color
---   terminal_colors = true, -- Configure the colors used when opening a `:terminal` in [Neovim](https://github.com/neovim/neovim)
---   styles = {
---     -- Style to be applied to different syntax groups
---     -- Value is any valid attr-list value for `:help nvim_set_hl`
---     comments = { italic = true },
---     keywords = { italic = true },
---     functions = {},
---     variables = {},
---     -- Background styles. Can be "dark", "transparent" or "normal"
---     sidebars = "dark", -- style for sidebars, see below
---     floats = "dark", -- style for floating windows
---   },
---   sidebars = { "qf", "help" }, -- Set a darker background on sidebar-like windows. For example: `["qf", "vista_kind", "terminal", "packer"]`
---   day_brightness = 0.3, -- Adjusts the brightness of the colors of the **Day** style. Number between 0 and 1, from dull to vibrant colors
---   hide_inactive_statusline = false, -- Enabling this option, will hide inactive statuslines and replace them with a thin border instead. Should work with the standard **StatusLine** and **LuaLine**.
---   dim_inactive = false, -- dims inactive windows
---   lualine_bold = false, -- When `true`, section headers in the lualine theme will be bold
---
---   --- You can override specific color groups to use other groups or a hex color
---   --- function will be called with a ColorScheme table
---   ---@param colors ColorScheme
---   on_colors = function(colors) end,
---
---   --- You can override specific highlights to use other groups or a hex color
---   --- function will be called with a Highlights and ColorScheme table
---   ---@param highlights Highlights
---   ---@param colors ColorScheme
---   on_highlights = function(highlights, colors) end,
--- })
+require("better_escape").setup({
+  mapping = { "jk", "jj" }, -- a table with mappings to use
+  timeout = vim.o.timeoutlen, -- the time in which the keys must be hit in ms. Use option timeoutlen by default
+  clear_empty_lines = true, -- clear line after escaping if there is only whitespace
+  keys = "<Esc>", -- keys used for escaping, if it is a function will use the result everytime
+  -- example(recommended)
+  -- keys = function()
+  --   return vim.api.nvim_win_get_cursor(0)[2] > 1 and '<esc>l' or '<esc>'
+  -- end,
+})
+vim.opt.guicursor = ""
+
+local dap = require("dap")
+vim.keymap.set("n", "<F5>", require("dap").continue)
+vim.keymap.set("n", "<F10>", require("dap").step_over)
+vim.keymap.set("n", "<F11>", require("dap").step_into)
+vim.keymap.set("n", "<F12>", require("dap").step_out)
+vim.keymap.set("n", "<leader>b", require("dap").toggle_breakpoint)
+vim.keymap.set("n", "<leader>B", function()
+  require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
+end)
+require("dap-vscode-js").setup({
+  -- node_path = "node", -- Path of node executable. Defaults to $NODE_PATH, and then "node"
+  debugger_path = vim.fn.stdpath("data") .. "/lazy/vscode-js-debug",
+  -- debugger_cmd = { "extension" }, -- Command to use to launch the debug server. Takes precedence over `node_path` and `debugger_path`.
+  adapters = {
+    "chrome",
+    "node-terminal",
+    "pwa-extensionHost",
+    "node",
+    "pwa-node",
+    "pwa-chrome",
+  }, -- which adapters to register in nvim-dap
+  -- log_file_path = "(stdpath cache)/dap_vscode_js.log" -- Path for file logging
+  -- log_file_level = false -- Logging level for output to file. Set to false to disable file logging.
+  -- log_console_level = vim.log.levels.ERROR -- Logging level for output to console. Set to false to disable console output.
+})
+local js_based_languages = { "typescript", "javascript", "typescriptreact" }
+
+for _, language in ipairs(js_based_languages) do
+  require("dap").configurations[language] = {
+    {
+      type = "pwa-node",
+      request = "launch",
+      name = "Launch file",
+      program = "${file}",
+      cwd = "${workspaceFolder}",
+    },
+    {
+      type = "pwa-node",
+      request = "attach",
+      name = "Attach",
+      processId = require("dap.utils").pick_process,
+      cwd = "${workspaceFolder}",
+    },
+    {
+      type = "pwa-chrome",
+      request = "launch",
+      name = 'Start Chrome with "localhost"',
+      url = "http://localhost:3000",
+      webRoot = "${workspaceFolder}",
+      userDataDir = "${workspaceFolder}/.vscode/vscode-chrome-debug-userdatadir",
+    },
+  }
+end
