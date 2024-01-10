@@ -10,7 +10,6 @@ require("better_escape").setup({
   --   return vim.api.nvim_win_get_cursor(0)[2] > 1 and '<esc>l' or '<esc>'
   -- end,
 })
-vim.opt.guicursor = ""
 
 local dap = require("dap")
 vim.keymap.set("n", "<F5>", require("dap").continue)
