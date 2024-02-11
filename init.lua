@@ -1,3 +1,9 @@
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "json", "jsonc", "markdown" },
+  callback = function()
+    vim.opt.conceallevel = 0
+  end,
+})
 -- bootstrap lazy.nvim, LazyVim and your plugins
 require("config.lazy")
 require("better_escape").setup({
