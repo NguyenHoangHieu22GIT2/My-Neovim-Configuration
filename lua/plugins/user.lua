@@ -1,4 +1,7 @@
 return {
+  {
+    "https://github.com/nyoom-engineering/oxocarbon.nvim",
+  },
   { "Mofiqul/vscode.nvim" },
   -- add gruvbox
   { "mxsdev/nvim-dap-vscode-js" },
@@ -84,7 +87,7 @@ return {
   {
 
     "LazyVim/LazyVim",
-    opts = { colorscheme = "vscode" },
+    opts = { colorscheme = "oxocarbon" },
   },
   --
   -- -- change trouble config
