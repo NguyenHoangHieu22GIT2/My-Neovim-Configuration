@@ -87,7 +87,7 @@ return {
   {
 
     "LazyVim/LazyVim",
-    opts = { colorscheme = "oxocarbon" },
+    opts = { colorscheme = "gruvbox" },
   },
   --
   -- -- change trouble config

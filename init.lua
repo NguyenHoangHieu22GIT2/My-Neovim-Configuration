@@ -9,15 +9,41 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 -- bootstrap lazy.nvim, LazyVim and your plugins
 require("config.lazy")
+-- lua, default settings
 require("better_escape").setup({
-  mapping = { "jk", "jj" }, -- a table with mappings to use
-  timeout = vim.o.timeoutlen, -- the time in which the keys must be hit in ms. Use option timeoutlen by default
-  clear_empty_lines = true, -- clear line after escaping if there is only whitespace
-  keys = "<Esc>", -- keys used for escaping, if it is a function will use the result everytime
-  -- example(recommended)
-  -- keys = function()
-  --   return vim.api.nvim_win_get_cursor(0)[2] > 1 and '<esc>l' or '<esc>'
-  -- end,
+  timeout = vim.o.timeoutlen,
+  default_mappings = true,
+  mappings = {
+    i = {
+      j = {
+        -- These can all also be functions
+        k = "<Esc>",
+        j = "<Esc>",
+      },
+    },
+    c = {
+      j = {
+        k = "<Esc>",
+        j = "<Esc>",
+      },
+    },
+    t = {
+      j = {
+        k = "<Esc>",
+        j = "<Esc>",
+      },
+    },
+    v = {
+      j = {
+        k = "<Esc>",
+      },
+    },
+    s = {
+      j = {
+        k = "<Esc>",
+      },
+    },
+  },
 })
 
 local dap = require("dap")
